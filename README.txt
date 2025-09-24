@@ -47,6 +47,28 @@ The sources are currently maintained on github:
 
     https://github.com/Impro-Visor/Impro-Visor
 
+==============================
+Building a macOS disk image
+==============================
+
+A helper script is provided to build a self-contained runtime image for macOS
+using the JDK-provided `jpackage` tool. To generate a DMG on a macOS host with
+Ant and JDK 14 (or newer) available, run:
+
+    cd Impro-Visor
+    ./packaging/macos/build_dmg.sh
+
+The script compiles the distribution with Ant, invokes `jpackage` to bundle a
+modern Java runtime, and writes the resulting DMG to `build/distributions`.
+The archive name includes the application version and local CPU architecture,
+which makes it straightforward to publish both Intel and Apple Silicon builds.
+
+Continuous integration support is available via the `Build macOS DMG` workflow
+in `.github/workflows/macos-dmg.yml`. The workflow runs on both Intel and
+Apple Silicon GitHub-hosted runners and uploads the generated DMG files as
+artifacts when triggered manually or when a Git tag following the `v*` pattern
+is pushed.
+
 Once the program is installed, there should be a launcher
 
     Impro-Visor
