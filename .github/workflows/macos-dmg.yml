@@ -1,0 +1,44 @@
+name: Build macOS DMG
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  dmg:
+    name: macOS DMG (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - macos-13
+          - macos-14
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Temurin JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Ensure Ant is available
+        run: |
+          if ! command -v ant >/dev/null 2>&1; then
+            brew update
+            brew install ant
+          fi
+
+      - name: Build distribution image
+        run: |
+          ./packaging/macos/build_dmg.sh
+
+      - name: Upload DMG artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Impro-Visor-${{ matrix.os }}-dmg
+          path: build/distributions/*.dmg
+          if-no-files-found: error

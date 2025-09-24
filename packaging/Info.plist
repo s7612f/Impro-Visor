@@ -46,7 +46,9 @@
                 <dict>
                     <key>apple.laf.useScreenMenuBar</key>
                     <string>true</string>
+                    <key>improvisor.install.root</key>
+                    <string>$JAVAROOT</string>
                 </dict>
-	</dict>
+        </dict>
 </dict>
 </plist>
