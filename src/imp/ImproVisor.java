@@ -583,7 +583,7 @@ public static void establishUserDirectory(File homeDir)
 
 public static void copyDir(String subDirName, File homeDir)
   {
-    File masterDir = new File(subDirName);
+    File masterDir = new File(getInstallationDirectory(), subDirName);
 
     File userDir = new File(homeDir, subDirName);
 
@@ -593,9 +593,33 @@ public static void copyDir(String subDirName, File homeDir)
           }
         catch( IOException e )
           {
-            ErrorLog.log(ErrorLog.SEVERE, "Error in copying folder " 
+            ErrorLog.log(ErrorLog.SEVERE, "Error in copying folder "
                            + subDirName + " to user directory.");
           }
+  }
+
+private static final String INSTALL_ROOT_PROPERTY = "improvisor.install.root";
+
+private static File installationDirectory;
+
+public static synchronized File getInstallationDirectory()
+  {
+    if( installationDirectory == null )
+      {
+        String override = System.getProperty(INSTALL_ROOT_PROPERTY);
+
+        if( override != null && override.trim().length() > 0 )
+          {
+            installationDirectory = new File(override.trim());
+          }
+        else
+          {
+            String cwd = System.getProperty("user.dir", ".");
+            installationDirectory = new File(cwd);
+          }
+      }
+
+    return installationDirectory;
   }
 
 

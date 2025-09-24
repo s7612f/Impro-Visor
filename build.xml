@@ -502,12 +502,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
     <mkdir dir="${appdir}/Contents/MacOS" />
     <mkdir dir="${appdir}/Contents/Resources" />
     <mkdir dir="${appdir}/Contents/Resources/Java" />
-    <mkdir dir="${dist-mac}/vocab" />
-    <mkdir dir="${dist-mac}/styles" />
-    <mkdir dir="${dist-mac}/styleExtract" />
-    <mkdir dir="${dist-mac}/midi" />
-    <mkdir dir="${dist-mac}/leadsheets" />
-    
+    <property name="macJavaRoot" value="${appdir}/Contents/Resources/Java" />
+
     <copy file="${packagingDir}/JavaApplicationStub"
         todir="${appdir}/Contents/MacOS"/>
     <exec executable="chmod">
@@ -522,55 +518,55 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
         
     <copy file="${packagingDir}/PkgInfo"
         todir="${dist-mac}/${appName}.app/Contents"/>
-        
+
     <copy file="${distDir}/improvisor.jar"
-        todir="${appdir}/Contents/Resources/Java"/>
-        
-    <copy todir="${dist-mac}/vocab">
+        todir="${macJavaRoot}"/>
+
+    <copy todir="${macJavaRoot}/vocab">
         <fileset dir="${vocabDir}" includes="**/*.voc HeadData.data" />
     </copy>
-    
-    <copy todir="${dist-mac}/vocab">
+
+    <copy todir="${macJavaRoot}/vocab">
         <fileset dir="${vocabDir}" includes="**/*" />
     </copy>
-    
-    <copy todir="${dist-mac}">
+
+    <copy todir="${macJavaRoot}">
         <fileset dir="" includes="LICENSE.txt README.txt" />
     </copy>
 
-    <copy todir="${dist-mac}/vocab">
+    <copy todir="${macJavaRoot}/vocab">
         <fileset dir="${vocabDir}" includes="**/*.grammar **/*.soloist" />
     </copy>
 
-    <copy todir="${dist-mac}/vocab">
+    <copy todir="${macJavaRoot}/vocab">
         <fileset dir="${vocabDir}" includes="**/*.prefs" />
     </copy>
-    
-    <copy todir="${dist-mac}/vocab">
+
+    <copy todir="${macJavaRoot}/vocab">
         <fileset dir="${vocabDir}" includes="**/*.xml" />
     </copy>
-    
-    <copy todir="${dist-mac}/leadsheets">
+
+    <copy todir="${macJavaRoot}/leadsheets">
         <fileset dir="${lsDir}" includes="**/*.ls" />
     </copy>
-    
-    <copy todir="${dist-mac}/styles">
+
+    <copy todir="${macJavaRoot}/styles">
         <fileset dir="${styleDir}" includes="**/*.sty" />
     </copy>
-    
-    <copy todir="${dist-mac}/styleExtract">
+
+    <copy todir="${macJavaRoot}/styleExtract">
         <fileset dir="${styleExtractDir}" includes="**/*.ls **/*.mid **/*.MID" />
     </copy>
-    
-     <copy todir="${dist-mac}/midi">
+
+     <copy todir="${macJavaRoot}/midi">
         <fileset dir="${midiDir}" includes="**/*.mid **/*.MID" />
     </copy>
-    
-    <copy todir="${dist-mac}">
+
+    <copy todir="${macJavaRoot}">
         <fileset dir="${miscDir}" includes="**/*.*" />
     </copy>
-   
-    
+
+
 </target>
 
 <target name="dist-win" depends="dist">
