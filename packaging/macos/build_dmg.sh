@@ -60,7 +60,6 @@ done
 
 command -v ant >/dev/null 2>&1 || { echo "ant is required to build the distribution." >&2; exit 1; }
 command -v jpackage >/dev/null 2>&1 || { echo "jpackage is required to create the DMG." >&2; exit 1; }
-command -v tar >/dev/null 2>&1 || { echo "tar is required to stage resources for jpackage." >&2; exit 1; }
 
 if [[ "${SKIP_CLEAN}" != "true" ]]; then
   ant clean
@@ -98,35 +97,21 @@ if [[ ! -d "${APP_IMAGE_DIR}" ]]; then
   exit 1
 fi
 
+if [[ ! -f "${APP_IMAGE_DIR}/improvisor.jar" ]]; then
+  echo "Could not find improvisor.jar in '${APP_IMAGE_DIR}'." >&2
+  exit 1
+fi
+
 DMG_BASENAME="${APP_NAME}-${APP_VERSION}"
 ARCH_NAME="$(uname -m)"
 TARGET_DMG="${OUTPUT_DIR}/${DMG_BASENAME}-macOS-${ARCH_NAME}.dmg"
 
 rm -f "${OUTPUT_DIR}/${APP_NAME}-${APP_VERSION}.dmg" "${TARGET_DMG}"
 
-STAGING_ROOT="$(mktemp -d "${TMPDIR:-/tmp}/improvisor-mac.XXXXXX")"
-cleanup() {
-  rm -rf "${STAGING_ROOT}" 2>/dev/null || true
-}
-trap cleanup EXIT INT TERM
-
-INPUT_DIR="${STAGING_ROOT}/input"
-RESOURCE_DIR="${STAGING_ROOT}/resources"
-mkdir -p "${INPUT_DIR}" "${RESOURCE_DIR}"
-
-if [[ ! -f "${APP_IMAGE_DIR}/improvisor.jar" ]]; then
-  echo "Could not find improvisor.jar in '${APP_IMAGE_DIR}'." >&2
-  exit 1
-fi
-
-cp "${APP_IMAGE_DIR}/improvisor.jar" "${INPUT_DIR}/"
-tar -C "${APP_IMAGE_DIR}" --exclude "improvisor.jar" -cf - . | tar -C "${RESOURCE_DIR}" -xf -
-
 jpackage \
   --type dmg \
   --name "${APP_NAME}" \
-  --input "${INPUT_DIR}" \
-  --resource-dir "${RESOURCE_DIR}" \
+  --input "${APP_IMAGE_DIR}" \
   --main-jar improvisor.jar \
   --main-class imp.ImproVisor \
   --app-version "${APP_VERSION}" \
