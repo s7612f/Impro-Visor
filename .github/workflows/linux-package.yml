@@ -1,0 +1,37 @@
+name: Build Linux package
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  linux:
+    name: Linux package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Temurin JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Install Ant
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ant
+
+      - name: Build Linux runtime
+        run: |
+          ./packaging/linux/build_app_image.sh --type app-image
+
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Impro-Visor-linux-package
+          path: build/distributions/*
+          if-no-files-found: error
